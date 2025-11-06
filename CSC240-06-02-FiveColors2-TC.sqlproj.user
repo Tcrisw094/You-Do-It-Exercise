@@ -1,0 +1,170 @@
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace RadioButtonResetExample
+{
+    public class Form1 : Form
+    {
+        private readonly RadioButton rdoRed;
+        private readonly RadioButton rdoGreen;
+        private readonly RadioButton rdoBlue;
+        private readonly RadioButton rdoYellow;
+        private readonly RadioButton rdoGray;
+        private readonly Button btnReset;
+        private readonly GroupBox grpColors;
+        private Color _defaultBackColor;
+
+        public Form1()
+        {
+            // Capture default background color early (before changes)
+            _defaultBackColor = SystemColors.Control;
+            this.BackColor = _defaultBackColor;
+
+            // Create controls
+            grpColors = new GroupBox();
+            rdoRed = new RadioButton();
+            rdoGreen = new RadioButton();
+            rdoBlue = new RadioButton();
+            rdoYellow = new RadioButton();
+            rdoGray = new RadioButton();
+            btnReset = new Button();
+
+            InitializeComponent();
+        }
+
+        private void InitializeComponent()
+        {
+            // Form
+            this.Text = "Radio Button Color Picker";
+            this.ClientSize = new Size(360, 220);
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+            // GroupBox
+            grpColors.Text = "Choose a color";
+            grpColors.Size = new Size(320, 140);
+            grpColors.Location = new Point(16, 12);
+            grpColors.TabStop = false;
+
+            // RadioButtons (no default checked)
+            rdoRed.Text = "Red";
+            rdoRed.Location = new Point(16, 24);
+            rdoRed.AutoSize = true;
+            rdoRed.CheckedChanged += Radio_CheckedChanged;
+
+            rdoGreen.Text = "Green";
+            rdoGreen.Location = new Point(16, 48);
+            rdoGreen.AutoSize = true;
+            rdoGreen.CheckedChanged += Radio_CheckedChanged;
+
+            rdoBlue.Text = "Blue";
+            rdoBlue.Location = new Point(16, 72);
+            rdoBlue.AutoSize = true;
+            rdoBlue.CheckedChanged += Radio_CheckedChanged;
+
+            rdoYellow.Text = "Yellow";
+            rdoYellow.Location = new Point(16, 96);
+            rdoYellow.AutoSize = true;
+            rdoYellow.CheckedChanged += Radio_CheckedChanged;
+
+            rdoGray.Text = "Light Gray";
+            rdoGray.Location = new Point(16, 120);
+            rdoGray.AutoSize = true;
+            rdoGray.CheckedChanged += Radio_CheckedChanged;
+
+            // Add radio buttons to group
+            grpColors.Controls.Add(rdoRed);
+            grpColors.Controls.Add(rdoGreen);
+            grpColors.Controls.Add(rdoBlue);
+            grpColors.Controls.Add(rdoYellow);
+            grpColors.Controls.Add(rdoGray);
+
+            // Reset button
+            btnReset.Text = "Reset";
+            btnReset.Size = new Size(80, 30);
+            btnReset.Location = new Point(256, 164);
+            btnReset.Click += BtnReset_Click;
+
+            // Add controls to form
+            this.Controls.Add(grpColors);
+            this.Controls.Add(btnReset);
+
+            // Ensure initial state: no radio selected, default back color
+            ClearSelections();
+            this.BackColor = _defaultBackColor;
+        }
+
+        private void Radio_CheckedChanged(object sender, EventArgs e)
+        {
+            // Only act when a radio becomes checked
+            if (sender is RadioButton rb && rb.Checked)
+            {
+                switch (rb.Text)
+                {
+                    case "Red":
+                        this.BackColor = Color.LightCoral;
+                        break;
+                    case "Green":
+                        this.BackColor = Color.LightGreen;
+                        break;
+                    case "Blue":
+                        this.BackColor = Color.LightBlue;
+                        break;
+                    case "Yellow":
+                        this.BackColor = Color.LightYellow;
+                        break;
+                    case "Light Gray":
+                        this.BackColor = Color.LightGray;
+                        break;
+                    default:
+                        this.BackColor = _defaultBackColor;
+                        break;
+                }
+            }
+        }
+
+        private void BtnReset_Click(object sender, EventArgs e)
+        {
+            // Reset background color and clear radio selections
+            this.BackColor = _defaultBackColor;
+            ClearSelections();
+        }
+
+        private void ClearSelections()
+        {
+            // Uncheck all radio buttons programmatically
+            // Unchecking radio buttons in a group can sometimes auto-select another;
+            // temporarily disable CheckedChanged handlers to avoid side-effects.
+            rdoRed.CheckedChanged -= Radio_CheckedChanged;
+            rdoGreen.CheckedChanged -= Radio_CheckedChanged;
+            rdoBlue.CheckedChanged -= Radio_CheckedChanged;
+            rdoYellow.CheckedChanged -= Radio_CheckedChanged;
+            rdoGray.CheckedChanged -= Radio_CheckedChanged;
+
+            rdoRed.Checked = false;
+            rdoGreen.Checked = false;
+            rdoBlue.Checked = false;
+            rdoYellow.Checked = false;
+            rdoGray.Checked = false;
+
+            rdoRed.CheckedChanged += Radio_CheckedChanged;
+            rdoGreen.CheckedChanged += Radio_CheckedChanged;
+            rdoBlue.CheckedChanged += Radio_CheckedChanged;
+            rdoYellow.CheckedChanged += Radio_CheckedChanged;
+            rdoGray.CheckedChanged += Radio_CheckedChanged;
+        }
+
+        [STAThread]
+        public static void Main()
+        {
+            // Record the starting solution to version control before modifying files:
+            // (execute these commands in your solution root)
+            // git init
+            // git add .
+            // git commit -m "Initial solution"
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
+        }
+    }
+}
